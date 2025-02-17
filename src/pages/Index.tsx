@@ -1,8 +1,35 @@
 
 import { motion } from "framer-motion";
 import { StatCard } from "../components/StatCard";
+import { RankingCard } from "../components/RankingCard";
+import { useState } from "react";
 
 const Index = () => {
+  const [newItemName, setNewItemName] = useState("");
+  const [rankings, setRankings] = useState([
+    { id: 1, name: "Coffee Shops", votes: 245 },
+    { id: 2, name: "Pizza Places", votes: 189 },
+    { id: 3, name: "Hiking Trails", votes: 156 },
+  ]);
+
+  const handleAddItem = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (newItemName.trim()) {
+      setRankings([...rankings, {
+        id: rankings.length + 1,
+        name: newItemName.trim(),
+        votes: 0
+      }]);
+      setNewItemName("");
+    }
+  };
+
+  const handleVote = (id: number) => {
+    setRankings(rankings.map(item => 
+      item.id === id ? { ...item, votes: item.votes + 1 } : item
+    ).sort((a, b) => b.votes - a.votes));
+  };
+
   return (
     <div className="min-h-screen w-full overflow-hidden">
       {/* Hero Section */}
@@ -15,33 +42,56 @@ const Index = () => {
             transition={{ duration: 0.8 }}
           >
             <span className="inline-block px-4 py-1 mb-6 text-sm font-medium rounded-full bg-secondary text-primary">
-              Welcome to Bestist
+              Welcome to The Bestist
             </span>
             <h1 className="text-5xl md:text-7xl font-bold mb-6 tracking-tight">
-              Transform Your Digital Presence
+              Rank Everything, <br/>Find the Best
             </h1>
             <p className="text-lg md:text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-              We help ambitious businesses reach their full potential through innovative technology solutions.
+              Join our community in discovering and ranking the best of everything. From coffee shops to hiking trails, help us find what truly stands out.
             </p>
-            <div className="flex flex-wrap gap-4 justify-center">
-              <button className="px-8 py-3 rounded-lg bg-primary text-white font-medium hover:bg-primary/90 transition-colors">
-                Get Started
+            <form onSubmit={handleAddItem} className="flex flex-wrap gap-4 justify-center mb-8">
+              <input
+                type="text"
+                value={newItemName}
+                onChange={(e) => setNewItemName(e.target.value)}
+                placeholder="What do you want to rank?"
+                className="px-4 py-3 rounded-lg border border-gray-200 focus:outline-none focus:border-primary/50 transition-colors min-w-[250px]"
+              />
+              <button 
+                type="submit"
+                className="px-8 py-3 rounded-lg bg-primary text-white font-medium hover:bg-primary/90 transition-colors"
+              >
+                Start Ranking
               </button>
-              <button className="px-8 py-3 rounded-lg border border-primary text-primary font-medium hover:bg-primary/5 transition-colors">
-                Learn More
-              </button>
-            </div>
+            </form>
           </motion.div>
         </div>
       </section>
 
-      {/* Stats Section */}
+      {/* Rankings Section */}
       <section className="py-20 px-4 bg-gradient-to-b from-white to-secondary/20">
         <div className="container max-w-6xl mx-auto">
+          <h2 className="text-3xl font-bold mb-12 text-center">Top Rankings</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {rankings.map((item) => (
+              <RankingCard
+                key={item.id}
+                item={item}
+                onVote={() => handleVote(item.id)}
+              />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Stats Section */}
+      <section className="py-20 px-4">
+        <div className="container max-w-6xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <StatCard number="98%" label="Client Satisfaction Rate" />
-            <StatCard number="250+" label="Projects Completed" />
-            <StatCard number="15+" label="Years of Experience" />
+            <StatCard number="10k+" label="Active Rankings" />
+            <StatCard number="50k+" label="Community Members" />
+            <StatCard number="1M+" label="Votes Cast" />
           </div>
         </div>
       </section>
@@ -50,7 +100,7 @@ const Index = () => {
       <section className="py-20 px-4">
         <div className="container max-w-6xl mx-auto">
           <div className="glass-card p-8 md:p-12">
-            <h2 className="text-3xl font-bold mb-8 text-center">Get in Touch</h2>
+            <h2 className="text-3xl font-bold mb-8 text-center">Get Involved</h2>
             <form className="max-w-lg mx-auto space-y-6">
               <div>
                 <input
@@ -68,13 +118,13 @@ const Index = () => {
               </div>
               <div>
                 <textarea
-                  placeholder="Your Message"
+                  placeholder="What would you like to rank?"
                   rows={4}
                   className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:outline-none focus:border-primary/50 transition-colors"
                 ></textarea>
               </div>
               <button className="w-full px-8 py-3 rounded-lg bg-primary text-white font-medium hover:bg-primary/90 transition-colors">
-                Send Message
+                Submit Suggestion
               </button>
             </form>
           </div>
