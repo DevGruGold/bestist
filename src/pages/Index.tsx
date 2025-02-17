@@ -30,10 +30,26 @@ const Index = () => {
     ).sort((a, b) => b.votes - a.votes));
   };
 
+  const handleContact = (e: React.FormEvent) => {
+    e.preventDefault();
+    const form = e.target as HTMLFormElement;
+    const formData = new FormData(form);
+    
+    // In a real app, you would send this to your backend
+    console.log({
+      name: formData.get('name'),
+      email: formData.get('email'),
+      message: formData.get('message')
+    });
+    
+    form.reset();
+    alert('Thank you for your message! We will get back to you soon.');
+  };
+
   return (
     <div className="min-h-screen w-full overflow-hidden">
       {/* Hero Section */}
-      <section className="relative h-screen flex items-center justify-center px-4">
+      <section className="relative min-h-screen flex items-center justify-center px-4 py-20 md:py-0">
         <div className="absolute inset-0 bg-gradient-to-br from-secondary/20 to-accent/20 -z-10" />
         <div className="container max-w-6xl mx-auto text-center">
           <motion.div
@@ -44,23 +60,23 @@ const Index = () => {
             <span className="inline-block px-4 py-1 mb-6 text-sm font-medium rounded-full bg-secondary text-primary">
               Welcome to The Bestist
             </span>
-            <h1 className="text-5xl md:text-7xl font-bold mb-6 tracking-tight">
+            <h1 className="text-4xl md:text-7xl font-bold mb-6 tracking-tight">
               Rank Everything, <br/>Find the Best
             </h1>
-            <p className="text-lg md:text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
+            <p className="text-lg md:text-xl text-gray-600 mb-8 max-w-2xl mx-auto px-4">
               Join our community in discovering and ranking the best of everything. From coffee shops to hiking trails, help us find what truly stands out.
             </p>
-            <form onSubmit={handleAddItem} className="flex flex-wrap gap-4 justify-center mb-8">
+            <form onSubmit={handleAddItem} className="flex flex-col md:flex-row gap-4 justify-center mb-8 px-4">
               <input
                 type="text"
                 value={newItemName}
                 onChange={(e) => setNewItemName(e.target.value)}
                 placeholder="What do you want to rank?"
-                className="px-4 py-3 rounded-lg border border-gray-200 focus:outline-none focus:border-primary/50 transition-colors min-w-[250px]"
+                className="px-4 py-3 rounded-lg border border-gray-200 focus:outline-none focus:border-primary/50 transition-colors w-full md:min-w-[250px]"
               />
               <button 
                 type="submit"
-                className="px-8 py-3 rounded-lg bg-primary text-white font-medium hover:bg-primary/90 transition-colors"
+                className="px-8 py-3 rounded-lg bg-primary text-white font-medium hover:bg-primary/90 transition-colors w-full md:w-auto"
               >
                 Start Ranking
               </button>
@@ -101,29 +117,38 @@ const Index = () => {
         <div className="container max-w-6xl mx-auto">
           <div className="glass-card p-8 md:p-12">
             <h2 className="text-3xl font-bold mb-8 text-center">Get Involved</h2>
-            <form className="max-w-lg mx-auto space-y-6">
+            <form onSubmit={handleContact} className="max-w-lg mx-auto space-y-6">
               <div>
                 <input
                   type="text"
+                  name="name"
                   placeholder="Your Name"
+                  required
                   className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:outline-none focus:border-primary/50 transition-colors"
                 />
               </div>
               <div>
                 <input
                   type="email"
+                  name="email"
                   placeholder="Your Email"
+                  required
                   className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:outline-none focus:border-primary/50 transition-colors"
                 />
               </div>
               <div>
                 <textarea
+                  name="message"
                   placeholder="What would you like to rank?"
                   rows={4}
+                  required
                   className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:outline-none focus:border-primary/50 transition-colors"
                 ></textarea>
               </div>
-              <button className="w-full px-8 py-3 rounded-lg bg-primary text-white font-medium hover:bg-primary/90 transition-colors">
+              <button 
+                type="submit"
+                className="w-full px-8 py-3 rounded-lg bg-primary text-white font-medium hover:bg-primary/90 transition-colors"
+              >
                 Submit Suggestion
               </button>
             </form>
