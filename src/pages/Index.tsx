@@ -2,15 +2,39 @@
 import { motion } from "framer-motion";
 import { StatCard } from "../components/StatCard";
 import { RankingCard } from "../components/RankingCard";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const Index = () => {
   const [newItemName, setNewItemName] = useState("");
+  const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
   const [rankings, setRankings] = useState([
     { id: 1, name: "Coffee Shops", votes: 245 },
     { id: 2, name: "Pizza Places", votes: 189 },
     { id: 3, name: "Hiking Trails", votes: 156 },
   ]);
+
+  useEffect(() => {
+    // Get user's location when component mounts
+    if ("geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          setUserLocation({
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+          });
+          console.log("Location detected:", {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude,
+          });
+        },
+        (error) => {
+          console.error("Error getting location:", error);
+        }
+      );
+    } else {
+      console.log("Geolocation is not supported by this browser.");
+    }
+  }, []);
 
   const handleAddItem = (e: React.FormEvent) => {
     e.preventDefault();
@@ -39,7 +63,8 @@ const Index = () => {
     console.log({
       name: formData.get('name'),
       email: formData.get('email'),
-      message: formData.get('message')
+      message: formData.get('message'),
+      location: userLocation // Include user location with the submission
     });
     
     form.reset();
